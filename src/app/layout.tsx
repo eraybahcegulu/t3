@@ -1,12 +1,15 @@
 import "app/styles/globals.css";
 
-import { Inter } from "next/font/google";
+import { Electrolize, } from "next/font/google";
 
 import { TRPCReactProvider } from "app/trpc/react";
+import { AntdRegistry } from "@ant-design/nextjs-registry";
+import { ConfigProvider } from "antd";
 
-const inter = Inter({
+const electrolize = Electrolize({
+  weight: "400",
   subsets: ["latin"],
-  variable: "--font-sans",
+  display: "swap",
 });
 
 export const metadata = {
@@ -22,8 +25,18 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`font-sans ${inter.variable}`}>
-        <TRPCReactProvider>{children}</TRPCReactProvider>
+      <body className={electrolize.className}>
+        <ConfigProvider
+          theme={{
+            token: {
+              fontFamily: electrolize.style.fontFamily,
+            },
+          }}
+        >
+          <AntdRegistry>
+            <TRPCReactProvider>{children}</TRPCReactProvider>
+          </AntdRegistry>
+        </ConfigProvider>
       </body>
     </html>
   );

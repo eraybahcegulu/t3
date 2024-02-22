@@ -21,12 +21,14 @@ export const postRouter = createTRPCRouter({
       // simulate a slow db call
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      return ctx.db.post.create({
+      await ctx.db.post.create({
         data: {
           name: input.name,
           createdBy: { connect: { id: ctx.session.user.id } },
         },
       });
+
+      return { message: `Post created` };
     }),
 
   getLatest: protectedProcedure.query(({ ctx }) => {
@@ -37,9 +39,34 @@ export const postRouter = createTRPCRouter({
   }),
 
   getAll: protectedProcedure.query( async ({ ctx }) => {
-    return ctx.db.post.findMany( {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    
+    const posts = await ctx.db.post.findMany({
       where: { createdBy: { id: ctx.session.user.id } },
     });
+  
+    const postsWithAuthors = await Promise.all(posts.map(async (post) => {
+      const author = await ctx.db.user.findUnique({
+          where: { id: post.createdById },
+      });
+
+      return { ...post, author };
+  }));
+  
+    return postsWithAuthors;
+  }),
+
+  getAllSession: protectedProcedure.query(async ({ ctx }) => {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    const posts = await ctx.db.post.findMany({
+      orderBy: { createdAt: "desc" },
+      where: { createdBy: { id: ctx.session.user.id } },
+    });
+
+    const author = ctx.session.user;
+
+    return { posts, author }
   }),
 
   getSecretMessage: protectedProcedure.query(() => {
