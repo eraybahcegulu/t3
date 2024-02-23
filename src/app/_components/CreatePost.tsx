@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { api } from "app/trpc/react";
+import toast from "react-hot-toast";
 
 export function CreatePost(props: { userName: string }) {
 
@@ -10,8 +11,12 @@ export function CreatePost(props: { userName: string }) {
   const createPost = api.post.create.useMutation({
     onSuccess: () => {
       void ctx.post.getAll.invalidate();
+      toast.success('Posted')
       setName("");
     },
+    onError: () => {
+      toast.error('Failed to post')
+    }
   });
 
   return (
@@ -27,8 +32,9 @@ export function CreatePost(props: { userName: string }) {
         value={name}
         onChange={(e) => setName(e.target.value)}
         type="text"
-        placeholder={`What is happening? @${props.userName} `}
+        placeholder={`What is happening? @${props.userName}`}
         className="grow bg-transparent outline-none "
+        disabled={createPost.isLoading}
       />
       <button
         type="submit"

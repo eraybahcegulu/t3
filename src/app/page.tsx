@@ -7,6 +7,7 @@ import SignIn from "./_components/SignIn";
 
 import Image from "next/image";
 import AllPosts from "./_components/AllPosts";
+import SignOut from "./_components/SignOut";
 
 export default async function Home() {
   noStore();
@@ -21,12 +22,16 @@ export default async function Home() {
           ?
           <div className="flex flex-col min-h-screen min-w-[30%] max-w-[400px] justify-start border-x border-gray-700">
             <div className="flex flex-row justify-center gap-4 w-full p-2 border-y border-gray-700">
-              <Image className="h-20 w-20 rounded-full" src={session.user.image ?? ""} width={64} height={64} alt="User Avatar" />
+              <div className="flex flex-col items-center">
+                <Image className="h-20 w-20 rounded-full" src={session.user.image ?? ""} width={64} height={64} alt="User Avatar" />
+              </div>
               <CreatePost userName={session.user.name ?? ""} />
             </div>
+            <AllPosts userId={session.user.id ?? ""} />
 
-            <AllPosts />
-
+            <div className="flex justify-center m-5">
+              <SignOut/>
+            </div>
           </div>
           :
           <SignIn />

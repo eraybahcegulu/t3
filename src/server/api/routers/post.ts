@@ -32,6 +32,27 @@ export const postRouter = createTRPCRouter({
       return { message: `Post created` };
     }),
 
+    delete: protectedProcedure
+    .input(z.object({ id: z.number().min(1) }))
+    .mutation(async ({ ctx, input }) => {
+      // simulate a slow db call
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      const existingPost = await ctx.db.post.findFirst({
+        where: { id: input.id },
+      });
+
+      if (!existingPost) {
+        return { error: `Failed. Movie with id ${input.id} not found.` };
+      }
+
+      await ctx.db.post.delete({
+        where: { id: input.id },
+      });
+
+      return { message: `Movie "${existingPost.name}" deleted successfully` };
+    }),
+
   getLatest: protectedProcedure.query(({ ctx }) => {
     return ctx.db.post.findFirst({
       orderBy: { createdAt: "desc" },
@@ -43,7 +64,6 @@ export const postRouter = createTRPCRouter({
     await new Promise((resolve) => setTimeout(resolve, 500));
     const posts = await ctx.db.post.findMany({
       orderBy: { createdAt: "desc" },
-      where: { createdBy: { id: ctx.session.user.id } },
     });
   
     const postsWithAuthors = await Promise.all(posts.map(async (post) => {

@@ -5,6 +5,7 @@ import { Electrolize, } from "next/font/google";
 import { TRPCReactProvider } from "app/trpc/react";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import { ConfigProvider } from "antd";
+import { Toaster } from "react-hot-toast";
 
 const electrolize = Electrolize({
   weight: "400",
@@ -34,6 +35,7 @@ export default function RootLayout({
           }}
         >
           <AntdRegistry>
+            <Toaster position="top-center"/>
             <TRPCReactProvider>{children}</TRPCReactProvider>
           </AntdRegistry>
         </ConfigProvider>
