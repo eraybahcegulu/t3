@@ -8,7 +8,6 @@ import SignIn from "./_components/SignIn";
 import Image from "next/image";
 import AllPosts from "./_components/AllPosts";
 import SignOut from "./_components/SignOut";
-import Link from "next/link";
 import MyPosts from "./_components/MyPosts";
 import MyLikes from "./_components/MyLikes";
 

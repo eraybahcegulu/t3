@@ -7,10 +7,11 @@ import Image from 'next/image';
 import dayjs from 'dayjs'
 import relativeTime from "dayjs/plugin/relativeTime";
 import DeletePost from './DeletePost';
+import { HeartOutlined } from '@ant-design/icons';
 dayjs.extend(relativeTime);
 
 const AllPosts = (props: { userId: string }) => {
-    const { data,  /* isLoading: postsLoading,*/ isFetching: postsFetching, isFetched: postFetched } = api.post.getAll.useQuery();
+    const { data,  /* isLoading: postsLoading,*/ isFetching: postsFetching, isFetched: postFetcheds } = api.post.getAll.useQuery();
     const [id, setId] = useState<number | null>();
 
     const handleDeletePost = (id: number) => {
@@ -37,7 +38,7 @@ const AllPosts = (props: { userId: string }) => {
             {
                 data?.length === 0
                 &&
-                postFetched
+                postFetcheds
                 &&
                 !postsFetching
                 &&
@@ -64,6 +65,10 @@ const AllPosts = (props: { userId: string }) => {
                                                 <span className='opacity-25 flex'>· {`${dayjs(post.createdAt).fromNow()}`}</span>
                                             </div>
                                             <span className='w-full break-words'>{post.name}</span>
+                                            <div>
+                                                <HeartOutlined className='mt-4 hover:text-red-500 hover:scale-125 cursor-pointer' />
+                                            </div>
+
                                         </div>
                                         {props.userId === post?.author?.id &&
                                             <div className='flex flex-row'>

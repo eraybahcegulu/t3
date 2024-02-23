@@ -11,11 +11,11 @@ const DeletePost = ({ id, isFetching, onDelete }: { id: number, isFetching: bool
     const ctx = api.useContext();
 
     const deletePost = api.post.delete.useMutation({
-
         onSuccess: () => {
             onDelete(id);
             void ctx.post.getAll.invalidate();
-            toast.success('Deleted')
+            void ctx.post.getAllSession.invalidate(); 
+            toast.success('Deleted');
             setOpenModal(false);
         },
         onError: () => {
