@@ -11,18 +11,20 @@ dayjs.extend(relativeTime);
 
 const AllPosts = (props: { userId: string }) => {
     const { data,  /* isLoading: postsLoading,*/ isFetching: postsFetching } = api.post.getAll.useQuery();
-    const [id, setId] = useState<number | undefined>();
+    const [id, setId] = useState<number | null>();
 
     const handleDeletePost = (id: number) => {
         setId(id);
     };
+
     return (
         <div className='h-full overflow-y-auto'>
             {
-                postsFetching && !id
+                (postsFetching)
                 &&
                 <LoadingSpinner p={"4"} />
             }
+
             {
                 !data
                 &&
@@ -34,11 +36,13 @@ const AllPosts = (props: { userId: string }) => {
             {
                 data?.map(
                     (post) => (
-                        <div className='max-w-[100%]  flex flex-row items-start gap-2 border-b border-gray-700 p-2' key={post.id}>
+                        <div className='max-w-[100%]  border-b border-gray-700 p-2' key={post.id}>
                             {
                                 post?.id === id
-                                    ? <LoadingSpinner />
-                                    : <>
+                                    ?
+                                    <span className='flex justify-center text-2xl text-red-500'> Deleting...</span>
+                                    : 
+                                    <div className=' flex flex-row gap-2 items-start '>
                                         <div className='flex-shrink-0'>
                                             <Image className="h-12 w-12 rounded-full" src={post?.author?.image ?? ''} width={64} height={64} alt="User Avatar" />
                                         </div>
@@ -58,7 +62,7 @@ const AllPosts = (props: { userId: string }) => {
                                                 </div>
                                             </div>
                                         }
-                                    </>
+                                    </div>
                             }
 
 

@@ -5,7 +5,7 @@ import { Modal, Button } from 'antd';
 import { api } from 'app/trpc/react';
 import { DeleteOutlined, LoadingOutlined } from '@ant-design/icons';
 import toast from "react-hot-toast";
-const DeletePost = ({ id, isFetching, onDelete  }: { id: number, isFetching: boolean, onDelete: (id: number) => void } ) => {
+const DeletePost = ({ id, isFetching, onDelete }: { id: number, isFetching: boolean, onDelete: (id: number) => void }) => {
 
     const [openModal, setOpenModal] = useState(false);
     const ctx = api.useContext();
@@ -13,7 +13,6 @@ const DeletePost = ({ id, isFetching, onDelete  }: { id: number, isFetching: boo
     const deletePost = api.post.delete.useMutation({
 
         onSuccess: () => {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
             onDelete(id);
             void ctx.post.getAll.invalidate();
             toast.success('Deleted')
@@ -27,7 +26,6 @@ const DeletePost = ({ id, isFetching, onDelete  }: { id: number, isFetching: boo
 
     const handleDeletePost = () => {
         setOpenModal(true);
-
     }
 
     return (
@@ -44,8 +42,10 @@ const DeletePost = ({ id, isFetching, onDelete  }: { id: number, isFetching: boo
             <Modal
                 title="Delete Post"
                 open={openModal}
-                onOk={() => deletePost.mutate({ id }
-                    )}
+                onOk={() => {
+
+                    deletePost.mutate({ id });
+                }}
                 onCancel={() => setOpenModal(false)}
                 okText="Delete"
                 cancelText="Cancel"
@@ -53,7 +53,11 @@ const DeletePost = ({ id, isFetching, onDelete  }: { id: number, isFetching: boo
                 centered
                 footer={[
                     <Button key="cancel" onClick={() => setOpenModal(false)} disabled={deletePost.isLoading}>Cancel</Button>,
-                    <Button key="delete" type="primary" onClick={() => deletePost.mutate({ id })} disabled={deletePost.isLoading}>
+                    <Button key="delete" type="primary" 
+                    onClick={() => {
+                        deletePost.mutate({ id });
+                    }}
+                    disabled={deletePost.isLoading}>
                         {deletePost.isLoading ? <p> Deleting... <LoadingOutlined /></p> : "Delete"}
                     </Button>
                 ]}
