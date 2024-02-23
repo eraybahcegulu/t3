@@ -1,17 +1,15 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
-
 import { api } from "app/trpc/react";
 
-export function CreatePost() {
-  const router = useRouter();
-  const [name, setName] = useState("");
+export function CreatePost(props: { userName: string }) {
 
+  const [name, setName] = useState("");
+  const ctx = api.useContext();
   const createPost = api.post.create.useMutation({
     onSuccess: () => {
-      router.refresh();
+      void ctx.post.getAll.invalidate();
       setName("");
     },
   });
@@ -25,19 +23,20 @@ export function CreatePost() {
       className="flex flex-row justify-center items-center grow gap-1"
     >
       <input
+        maxLength={200}
         value={name}
         onChange={(e) => setName(e.target.value)}
         type="text"
-        placeholder="What is happening?! "
-        className="grow bg-transparent outline-none"
-
+        placeholder={`What is happening? @${props.userName} `}
+        className="grow bg-transparent outline-none "
       />
       <button
         type="submit"
-        className="rounded-full bg-white/10 px-4 py-3 font-semibold transition hover:bg-white/20"
-        disabled={createPost.isLoading}
+        className="text-sm w-[100px] rounded-full bg-white/10 px-4 py-4 font-semibold transition hover:bg-white/20"
+        style={{ opacity: createPost.isLoading || name.length === 0 ? 0.5 : 1, pointerEvents: createPost.isLoading || name.length === 0 ? 'none' : 'auto' }}
+        disabled={createPost.isLoading || name.length === 0}
       >
-        {createPost.isLoading ? "Submitting..." : "Submit"}
+        {createPost.isLoading ? "Posting..." : "Post"}
       </button>
     </form>
   );
