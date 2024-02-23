@@ -29,9 +29,12 @@ export default async function Home() {
             </div>
             <AllPosts userId={session.user.id ?? ""} />
 
-            <div className="flex justify-center m-5">
-              <SignOut/>
+            <div className="mt-auto">
+              <div className="flex justify-center items-end m-5">
+                <SignOut />
+              </div>
             </div>
+
           </div>
           :
           <SignIn />

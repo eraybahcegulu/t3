@@ -40,18 +40,18 @@ const AllPosts = (props: { userId: string }) => {
                             {
                                 post?.id === id
                                     ?
-                                    <span className='flex justify-center text-2xl text-red-500'> Deleting...</span>
+                                    <span className='flex justify-center text-2xl text-red-500'> Deleted </span>
                                     : 
                                     <div className=' flex flex-row gap-2 items-start '>
                                         <div className='flex-shrink-0'>
                                             <Image className="h-12 w-12 rounded-full" src={post?.author?.image ?? ''} width={64} height={64} alt="User Avatar" />
                                         </div>
                                         <div className='flex flex-col flex-grow min-w-[300px]'>
-                                            <div className='flex flex-row'>
+                                            <div className='flex flex-row gap-1'>
                                                 <span className={`${props.userId === post?.author?.id ? 'text-blue-500 items-end' : 'opacity-25'}`}>
                                                     @{post?.author?.name}
                                                 </span>
-                                                <span className='opacity-25 flex'> · {` ${dayjs(post.createdAt).fromNow()}`}</span>
+                                                <span className='opacity-25 flex'>· {`${dayjs(post.createdAt).fromNow()}`}</span>
                                             </div>
                                             <span className='w-full break-words'>{post.name}</span>
                                         </div>
