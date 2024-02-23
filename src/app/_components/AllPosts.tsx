@@ -10,7 +10,7 @@ import DeletePost from './DeletePost';
 dayjs.extend(relativeTime);
 
 const AllPosts = (props: { userId: string }) => {
-    const { data,  /* isLoading: postsLoading,*/ isFetching: postsFetching } = api.post.getAll.useQuery();
+    const { data,  /* isLoading: postsLoading,*/ isFetching: postsFetching, isFetched: postFetched } = api.post.getAll.useQuery();
     const [id, setId] = useState<number | null>();
 
     const handleDeletePost = (id: number) => {
@@ -33,6 +33,16 @@ const AllPosts = (props: { userId: string }) => {
                 <div><span>Something went wrong</span>
                 </div>
             }
+
+            {
+                data?.length === 0
+                &&
+                postFetched
+                &&
+                !postsFetching
+                &&
+                <span className='flex justify-center text-2xl mt-2 text-blue-600'> No posts yet. </span>
+            }
             {
                 data?.map(
                     (post) => (
@@ -41,7 +51,7 @@ const AllPosts = (props: { userId: string }) => {
                                 post?.id === id
                                     ?
                                     <span className='flex justify-center text-2xl text-red-500'> Deleted </span>
-                                    : 
+                                    :
                                     <div className=' flex flex-row gap-2 items-start '>
                                         <div className='flex-shrink-0'>
                                             <Image className="h-12 w-12 rounded-full" src={post?.author?.image ?? ''} width={64} height={64} alt="User Avatar" />
@@ -64,8 +74,6 @@ const AllPosts = (props: { userId: string }) => {
                                         }
                                     </div>
                             }
-
-
                         </div>
                     ))
             }
