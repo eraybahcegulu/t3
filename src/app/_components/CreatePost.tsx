@@ -18,6 +18,7 @@ export function CreatePost(props: { userName: string }) {
       void ctx.post.getAll.fetch();
       void ctx.post.getAllSession.fetch();
       if (res.error) {
+        console.log(res.error)
         toast.error(res.error)
       } else if (res.message) {
         toast.success(res.message)
@@ -38,7 +39,7 @@ export function CreatePost(props: { userName: string }) {
       className="flex flex-row justify-center items-center grow gap-1"
     >
       <input
-        maxLength={200}
+        maxLength={150}
         value={name}
         onChange={(e) => setName(e.target.value)}
         type="text"

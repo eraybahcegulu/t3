@@ -17,24 +17,21 @@ export default async function Posts() {
             {
                 session
                     ?
-
-
                     <div className="flex flex-col min-h-screen min-w-[30%] max-w-[400px] justify-start border-x border-gray-700">
                         <div className="flex flex-col py-5 border-b border-gray-700 justify-center items-center pb-2">
-                            <div className="flex flex-row"> 
+                            <div className="flex flex-row">
                                 <Loby />
-                                <MyLikes/>
+                                <MyLikes />
                             </div>
                             <span className="text-2xl opacity-25 my-2"> My Posts</span>
                         </div>
-
                         <AllSessionPosts user={session.user} />
-                        <div className="flex justify-center items-end m-5">
-                            <SignOut />
+                        <div className="mt-auto">
+                            <div className="flex justify-center items-end m-5">
+                                <SignOut />
+                            </div>
                         </div>
                     </div>
-
-
                     :
                     <SignIn />
             }

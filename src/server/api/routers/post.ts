@@ -17,7 +17,7 @@ export const postRouter = createTRPCRouter({
 
   create: protectedProcedure
     .input(z.object({ name: z.string().min(1) }))
-    .input(z.object({ name: z.string().max(200) }))
+    .input(z.object({ name: z.string().max(150) }))
     .mutation(async ({ ctx, input }) => {
       // simulate a slow db call
       await new Promise((resolve) => setTimeout(resolve, 1000));

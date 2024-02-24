@@ -6,7 +6,6 @@ import LoadingSpinner from './LoadingSpinner';
 import dayjs from 'dayjs'
 import relativeTime from "dayjs/plugin/relativeTime";
 import Image from 'next/image';
-import { HeartOutlined } from '@ant-design/icons';
 import DeletePost from './DeletePost';
 import { LikePost } from './LikePost';
 dayjs.extend(relativeTime);

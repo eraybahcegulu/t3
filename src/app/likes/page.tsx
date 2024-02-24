@@ -21,13 +21,15 @@ export default async function Likes() {
                         <div className="flex flex-col border-b py-5  border-gray-700 justify-center items-center pb-2">
                             <div className="flex flex-row">
                                 <Loby />
-                                <MyPosts/>
+                                <MyPosts />
                             </div>
                             <span className="text-2xl opacity-25 my-2"> Posts I Liked </span>
                         </div>
                         <AllLikes user={session.user} />
-                        <div className="flex justify-center items-end m-5">
-                            <SignOut />
+                        <div className="mt-auto">
+                            <div className="flex justify-center items-end m-5">
+                                <SignOut />
+                            </div>
                         </div>
                     </div>
                     :
