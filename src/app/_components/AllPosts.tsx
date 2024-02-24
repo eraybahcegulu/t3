@@ -34,7 +34,8 @@ const AllPosts = (props: { userId: string }) => {
                 &&
                 !postsFetching
                 &&
-                <div><span>Something went wrong</span>
+                <div>
+                    <span>Something went wrong</span>
                 </div>
             }
 
