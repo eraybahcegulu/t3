@@ -51,7 +51,7 @@ const AllLikes = (props: { user: User }) => {
                 &&
                 !postsFetching
                 &&
-                <span className='flex justify-center text-2xl mt-2 text-blue-600'> No posts yet. </span>
+                <span className='flex justify-center text-2xl mt-2 text-blue-600'> No liked posts yet. </span>
             }
 
             {
@@ -59,6 +59,7 @@ const AllLikes = (props: { user: User }) => {
                     (post) => (
                         <div className='max-w-[100%]  border-b border-gray-700 p-2' key={post.id}>
                             {
+
                                 post?.id === id
                                     ?
                                     <span className='flex justify-center text-2xl text-red-500'> Deleted </span>
@@ -83,9 +84,7 @@ const AllLikes = (props: { user: User }) => {
                                                         :
                                                         <LikePost liked={false} id={post.id} />
                                                 }
-                                                {
-                                                    post.likedCount
-                                                }
+                                                <span className='opacity-25'>{post.likedCount}</span>
                                             </div>
 
                                         </div>

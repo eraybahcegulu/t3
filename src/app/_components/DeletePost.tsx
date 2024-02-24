@@ -15,6 +15,7 @@ const DeletePost = ({ id, isFetching, onDelete }: { id: number, isFetching: bool
             onDelete(id);
             void ctx.post.getAll.fetch();
             void ctx.post.getAllSession.fetch();
+            void ctx.post.getLikesPost.fetch();
             setOpenModal(false);
         },
         onError: (error) => {

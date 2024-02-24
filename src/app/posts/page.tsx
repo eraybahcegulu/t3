@@ -5,6 +5,7 @@ import SignIn from '../_components/SignIn';
 import AllSessionPosts from '../_components/AllSessionPosts';
 import Loby from '../_components/Loby';
 import SignOut from '../_components/SignOut';
+import MyLikes from '../_components/MyLikes';
 
 export default async function Posts() {
     noStore();
@@ -18,9 +19,14 @@ export default async function Posts() {
 
 
                     <div className="flex flex-col min-h-screen min-w-[30%] max-w-[400px] justify-start border-x border-gray-700">
-                        <div className="flex justify-center border-b border-gray-700 items-end py-5">
-                            <Loby />
+                        <div className="flex flex-col py-5 border-b border-gray-700 justify-center items-center pb-2">
+                            <div className="flex flex-row"> 
+                                <Loby />
+                                <MyLikes/>
+                            </div>
+                            <span className="text-2xl opacity-25 my-2"> My Posts</span>
                         </div>
+
                         <AllSessionPosts user={session.user} />
                         <div className="flex justify-center items-end m-5">
                             <SignOut />

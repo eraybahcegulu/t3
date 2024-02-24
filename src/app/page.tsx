@@ -29,12 +29,14 @@ export default async function Home() {
               </div>
               <CreatePost userName={session.user.name ?? ""} />
             </div>
-            <div className="flex flex-row border-b border-gray-700 justify-center pb-2">
-              <MyPosts />
+            <div className="flex flex-col border-b border-gray-700 justify-center items-center pb-2">
+              <div className="flex flex-row ">
 
-
+                <MyPosts />
                 <MyLikes />
 
+              </div>
+              <span className="text-2xl opacity-25 my-2"> Welcome Loby</span>
             </div>
 
             <AllPosts userId={session.user.id ?? ""} />
