@@ -1,4 +1,4 @@
-https://github.com/eraybahcegulu/t3/assets/84785201/61139a67-cbce-439d-89b9-a79f4b885ec3
+
 
 # Create T3 App
 
