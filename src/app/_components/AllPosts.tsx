@@ -7,16 +7,18 @@ import Image from 'next/image';
 import dayjs from 'dayjs'
 import relativeTime from "dayjs/plugin/relativeTime";
 import DeletePost from './DeletePost';
-import { HeartOutlined } from '@ant-design/icons';
+import { LikePost } from './LikePost';
 dayjs.extend(relativeTime);
 
 const AllPosts = (props: { userId: string }) => {
-    const { data,  /* isLoading: postsLoading,*/ isFetching: postsFetching, isFetched: postFetcheds } = api.post.getAll.useQuery();
+    const { data, isLoading: postsLoading, isFetching: postsFetching, isFetched: postFetcheds } = api.post.getAll.useQuery();
     const [id, setId] = useState<number | null>();
 
     const handleDeletePost = (id: number) => {
         setId(id);
     };
+
+    if (postsLoading) return <LoadingSpinner p={"4"} />
 
     return (
         <div className='h-full overflow-y-auto'>
@@ -49,7 +51,11 @@ const AllPosts = (props: { userId: string }) => {
                     (post) => (
                         <div className='max-w-[100%]  border-b border-gray-700 p-2' key={post.id}>
                             {
-                                post?.id === id
+                                postFetcheds
+                                    &&
+                                    !postsLoading
+                                    &&
+                                    post?.id === id
                                     ?
                                     <span className='flex justify-center text-2xl text-red-500'> Deleted </span>
                                     :
@@ -66,12 +72,21 @@ const AllPosts = (props: { userId: string }) => {
                                             </div>
                                             <span className='w-full break-words'>{post.name}</span>
                                             <div>
-                                                <HeartOutlined className='mt-4 hover:text-red-500 hover:scale-125 cursor-pointer' />
+                                                <LikePost id={post.id} />
                                             </div>
 
                                         </div>
-                                        {props.userId === post?.author?.id &&
+                                        {
+                                            post.likedByUser
+                                            &&
+                                            <span> liked </span>
+                                        }
+                                        {props.userId === post?.author?.id
+                                            &&
+
+
                                             <div className='flex flex-row'>
+
                                                 <div>
                                                     <DeletePost onDelete={handleDeletePost} id={post.id} isFetching={postsFetching} />
                                                 </div>

@@ -31,7 +31,10 @@ export default async function Home() {
             </div>
             <div className="flex flex-row border-b border-gray-700 justify-center pb-2">
               <MyPosts />
-              <MyLikes />
+
+
+                <MyLikes />
+
             </div>
 
             <AllPosts userId={session.user.id ?? ""} />

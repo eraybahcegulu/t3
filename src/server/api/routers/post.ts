@@ -32,7 +32,7 @@ export const postRouter = createTRPCRouter({
       return { message: `Post created` };
     }),
 
-    delete: protectedProcedure
+  delete: protectedProcedure
     .input(z.object({ id: z.number().min(1) }))
     .mutation(async ({ ctx, input }) => {
       // simulate a slow db call
@@ -60,20 +60,29 @@ export const postRouter = createTRPCRouter({
     });
   }),
 
-  getAll: protectedProcedure.query( async ({ ctx }) => {
+  getAll: protectedProcedure.query(async ({ ctx }) => {
     await new Promise((resolve) => setTimeout(resolve, 500));
     const posts = await ctx.db.post.findMany({
       orderBy: { createdAt: "desc" },
     });
-  
+
+
     const postsWithAuthors = await Promise.all(posts.map(async (post) => {
       const author = await ctx.db.user.findUnique({
           where: { id: post.createdById },
       });
-
-      return { ...post, author };
-  }));
   
+      const userLikes = await ctx.db.like.findMany({
+          where:{
+              userId : ctx.session.user.id
+          }
+      });
+  
+      const likedByUser = userLikes.some((like) => like.postId === post.id);
+  
+      return { ...post, author, userLikes, likedByUser };
+  }));
+
     return postsWithAuthors;
   }),
 
@@ -92,4 +101,36 @@ export const postRouter = createTRPCRouter({
   getSecretMessage: protectedProcedure.query(() => {
     return "you can now see this secret message!";
   }),
+
+  like: protectedProcedure
+    .input(z.object({ id: z.number().min(1) }))
+    .mutation(async ({ ctx, input }) => {
+
+      const alreadyLiked = await ctx.db.like.findFirst({
+        where: {
+          postId: input.id,
+          userId: ctx.session.user.id,
+        },
+      });
+
+      if (alreadyLiked) {
+        await ctx.db.like.delete({
+            where: {
+                id: alreadyLiked.id,
+            },
+        });
+
+        return { message: `Like removed` };
+    }
+
+
+      await ctx.db.like.create({
+        data: {
+          postId: input.id,
+          userId: ctx.session.user.id,
+        },
+      })
+
+      return { message: `Liked` };
+    }),
 });

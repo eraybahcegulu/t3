@@ -5,21 +5,20 @@ import { Modal, Button } from 'antd';
 import { api } from 'app/trpc/react';
 import { DeleteOutlined, LoadingOutlined } from '@ant-design/icons';
 import toast from "react-hot-toast";
-const DeletePost = ({ id, isFetching, onDelete }: { id: number, isFetching: boolean, onDelete: (id: number) => void }) => {
 
+const DeletePost = ({ id, isFetching, onDelete }: { id: number, isFetching: boolean, onDelete: (id: number) => void }) => {
     const [openModal, setOpenModal] = useState(false);
     const ctx = api.useContext();
 
     const deletePost = api.post.delete.useMutation({
         onSuccess: () => {
             onDelete(id);
-            void ctx.post.getAll.invalidate();
-            void ctx.post.getAllSession.invalidate(); 
-            toast.success('Deleted');
+            void ctx.post.getAll.fetch();
+            void ctx.post.getAllSession.fetch();
             setOpenModal(false);
         },
-        onError: () => {
-            toast.error('Failed delete post')
+        onError: (error) => {
+            toast.error(error.message)
         }
     });
 

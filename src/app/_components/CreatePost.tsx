@@ -4,18 +4,28 @@ import { useState } from "react";
 import { api } from "app/trpc/react";
 import toast from "react-hot-toast";
 
+interface Res {
+  message?: string;
+  error?: string;
+}
+
 export function CreatePost(props: { userName: string }) {
 
   const [name, setName] = useState("");
   const ctx = api.useContext();
   const createPost = api.post.create.useMutation({
-    onSuccess: () => {
-      void ctx.post.getAll.invalidate();
-      toast.success('Posted')
+    onSuccess: (res: Res) => {
+      void ctx.post.getAll.fetch();
+      void ctx.post.getAllSession.fetch();
+      if (res.error) {
+        toast.error(res.error)
+      } else if (res.message) {
+        toast.success(res.message)
+      }
       setName("");
     },
-    onError: () => {
-      toast.error('Failed to post')
+    onError: (error) => {
+      toast.error(error.message)
     }
   });
 
