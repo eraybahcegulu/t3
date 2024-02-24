@@ -80,7 +80,13 @@ const AllSessionPosts = (props: { user: User }) => {
                                                         :
                                                         <LikePost liked={false} id={post.id} />
                                                 }
-                                                <span className='opacity-25'>{post.likedCount}</span>
+                                                <span className='opacity-25'>
+                                                    {
+                                                        post.likedCount !== 0
+                                                        &&
+                                                        post.likedCount
+                                                    }
+                                                </span>
                                             </div>
 
                                         </div>
