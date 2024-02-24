@@ -6,10 +6,11 @@ import SignOut from '../_components/SignOut';
 import Loby from '../_components/Loby';
 import AllLikes from '../_components/AllLikes';
 import MyPosts from '../_components/MyPosts';
+import { api } from 'app/trpc/server';
 
 export default async function Likes() {
     noStore();
-
+    const myLikes = await api.post.myLikes.query();
     const session = await getServerAuthSession();
     return (
         <main className="flex min-h-screen max-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
@@ -23,7 +24,7 @@ export default async function Likes() {
                                 <Loby />
                                 <MyPosts />
                             </div>
-                            <span className="text-2xl opacity-25 my-2"> Posts I Liked </span>
+                            <span className="text-2xl opacity-25 my-2"> {myLikes.greeting} </span>
                         </div>
                         <AllLikes user={session.user} />
                         <div className="mt-auto">

@@ -6,11 +6,11 @@ import AllSessionPosts from '../_components/AllSessionPosts';
 import Loby from '../_components/Loby';
 import SignOut from '../_components/SignOut';
 import MyLikes from '../_components/MyLikes';
-
+import { api } from "app/trpc/server";
 
 export default async function Posts() {
     noStore();
-
+    const myPosts = await api.post.myPosts.query();
     const session = await getServerAuthSession();
     return (
         <main className="flex min-h-screen max-h-screen flex-col items-center justify-start bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
@@ -23,7 +23,7 @@ export default async function Posts() {
                                 <Loby />
                                 <MyLikes />
                             </div>
-                            <span className="text-2xl opacity-25 my-2"> My Posts</span>
+                            <span className="text-2xl opacity-25 my-2"> {myPosts.greeting}</span>
                         </div>
                         <AllSessionPosts user={session.user} />
                         <div className="mt-auto">

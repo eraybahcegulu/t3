@@ -3,15 +3,27 @@ import { z } from "zod";
 import {
   createTRPCRouter,
   protectedProcedure,
-  publicProcedure,
 } from "app/server/api/trpc";
 
 export const postRouter = createTRPCRouter({
-  hello: publicProcedure
-    .input(z.object({ text: z.string() }))
-    .query(({ input }) => {
+  welcomeToLoby: protectedProcedure
+    .query(() => {
       return {
-        greeting: `Hello ${input.text}`,
+        greeting: `Welcome to Loby`,
+      };
+    }),
+
+    myPosts: protectedProcedure
+    .query(() => {
+      return {
+        greeting: `My Posts`,
+      };
+    }),
+
+    myLikes: protectedProcedure
+    .query(() => {
+      return {
+        greeting: `Posts I Liked`,
       };
     }),
 
