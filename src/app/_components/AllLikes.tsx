@@ -1,75 +1,78 @@
 'use client';
 
-import React, { useState } from 'react';
-import { api } from 'app/trpc/react';
+import React, { useState } from 'react'
+import { api } from "app/trpc/react";
 import LoadingSpinner from './LoadingSpinner';
-import Image from 'next/image';
 import dayjs from 'dayjs'
 import relativeTime from "dayjs/plugin/relativeTime";
+import Image from 'next/image';
+import { HeartOutlined } from '@ant-design/icons';
 import DeletePost from './DeletePost';
 import { LikePost } from './LikePost';
 dayjs.extend(relativeTime);
 
-const AllPosts = (props: { userId: string }) => {
-    const { data, isLoading: postsLoading, isFetching: postsFetching, isFetched: postFetcheds } = api.post.getAll.useQuery();
+interface User {
+    id?: string;
+    name?: string | null;
+    email?: string | null;
+    image?: string | null;
+}
+
+const AllLikes = (props: { user: User }) => {
+    const { data,  /* isLoading: postsLoading,*/ isFetching: postsFetching, isFetched: postsFetched } = api.post.getLikesPost.useQuery();
     const { data: userLikes } = api.post.getLikes.useQuery();
     const [id, setId] = useState<number | null>();
-
+    const { user } = props;
     const handleDeletePost = (id: number) => {
         setId(id);
     };
 
-    if (postsLoading) return <LoadingSpinner p={"4"} />
+    console.log(data)
 
     return (
         <div className='h-full overflow-y-auto'>
             {
-                (postsFetching)
+                postsFetching
                 &&
                 <LoadingSpinner p={"4"} />
             }
-
             {
-                !data
+                (!data)
                 &&
                 !postsFetching
                 &&
-                <div><span>Something went wrong</span>
-                </div>
+                <div> <span> Something went wrong</span>  </div>
             }
 
             {
                 data?.length === 0
                 &&
-                postFetcheds
+                postsFetched
                 &&
                 !postsFetching
                 &&
                 <span className='flex justify-center text-2xl mt-2 text-blue-600'> No posts yet. </span>
             }
+
             {
                 data?.map(
                     (post) => (
                         <div className='max-w-[100%]  border-b border-gray-700 p-2' key={post.id}>
                             {
-                                postFetcheds
-                                    &&
-                                    !postsLoading
-                                    &&
-                                    post?.id === id
+                                post?.id === id
                                     ?
                                     <span className='flex justify-center text-2xl text-red-500'> Deleted </span>
                                     :
                                     <div className=' flex flex-row gap-2 items-start '>
                                         <div className='flex-shrink-0'>
-                                            <Image className="h-12 w-12 rounded-full" src={post?.author?.image ?? ''} width={64} height={64} alt="User Avatar" />
+                                            <Image className="h-12 w-12 rounded-full" src={post.author?.image ?? ''} width={64} height={64} alt="User Avatar" />
                                         </div>
                                         <div className='flex flex-col flex-grow min-w-[300px]'>
                                             <div className='flex flex-row gap-1'>
-                                                <span className={`${props.userId === post?.author?.id ? 'text-blue-500 items-end' : 'opacity-25'}`}>
-                                                    @{post?.author?.name}
+                                                <span className={`${user.id === post?.createdById ? 'text-blue-500 items-end' : 'opacity-25'}`}>
+                                                    @{post.author?.name}
                                                 </span>
-                                                <span className='opacity-25 flex'>· {`${dayjs(post.createdAt).fromNow()}`}</span>
+                                                <span className='opacity-25 flex'>· {`${dayjs(post?.createdAt).fromNow()}`}</span>
                                             </div>
                                             <span className='w-full break-words'>{post.name}</span>
                                             <div className='flex flex-row mt-4 gap-1 items-center'>
@@ -80,18 +83,16 @@ const AllPosts = (props: { userId: string }) => {
                                                         :
                                                         <LikePost liked={false} id={post.id} />
                                                 }
-
                                                 {
                                                     post.likedCount
                                                 }
-
                                             </div>
 
                                         </div>
-                                        {props.userId === post?.author?.id
+                                        {
+                                            user.id === post.createdById
                                             &&
                                             <div className='flex flex-row'>
-
                                                 <div>
                                                     <DeletePost onDelete={handleDeletePost} id={post.id} isFetching={postsFetching} />
                                                 </div>
@@ -102,8 +103,8 @@ const AllPosts = (props: { userId: string }) => {
                         </div>
                     ))
             }
-        </div >
-    );
-};
+        </div>
+    )
+}
 
-export default AllPosts;
+export default AllLikes

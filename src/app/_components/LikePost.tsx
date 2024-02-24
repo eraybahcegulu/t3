@@ -15,6 +15,7 @@ export function LikePost({ id, liked }: { id: number, liked: boolean }) {
     const likePost = api.post.like.useMutation({
         onSuccess: (res: Res) => {
             void ctx.post.getLikes.fetch();
+            void ctx.post.getLikesPost.fetch();
             if (res.error) {
                 void toast.error(res.error)
             } else if (res.message) {
@@ -35,14 +36,14 @@ export function LikePost({ id, liked }: { id: number, liked: boolean }) {
                         onClick={() => {
                             likePost.mutate({ id });
                         }}
-                        className="text-xl mt-4 text-red-600 transition-all hover:scale-125 cursor-pointer"
+                        className="text-xl text-red-600 transition-all hover:scale-125 cursor-pointer"
                     />
                     :
                     <IoMdHeartEmpty
                         onClick={() => {
                             likePost.mutate({ id });
                         }}
-                        className="opacity-25 text-xl mt-4 hover:text-red-600 hover:opacity-100 transition-all hover:scale-125 cursor-pointer"
+                        className="opacity-25 text-xl hover:text-red-600 hover:opacity-100 transition-all hover:scale-125 cursor-pointer"
                     />
             }
         </>

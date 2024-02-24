@@ -6,8 +6,8 @@ import LoadingSpinner from './LoadingSpinner';
 import dayjs from 'dayjs'
 import relativeTime from "dayjs/plugin/relativeTime";
 import Image from 'next/image';
-import { HeartOutlined } from '@ant-design/icons';
 import DeletePost from './DeletePost';
+import { LikePost } from './LikePost';
 dayjs.extend(relativeTime);
 
 interface User {
@@ -19,12 +19,13 @@ interface User {
 
 const AllSessionPosts = (props: { user: User }) => {
     const { data,  /* isLoading: postsLoading,*/ isFetching: postsFetching, isFetched: postsFetched } = api.post.getAllSession.useQuery();
+    const { data: userLikes } = api.post.getLikes.useQuery();
     const [id, setId] = useState<number | null>();
     const { user } = props;
     const handleDeletePost = (id: number) => {
         setId(id);
     };
-    
+
     return (
         <div className='h-full overflow-y-auto'>
             {
@@ -71,8 +72,18 @@ const AllSessionPosts = (props: { user: User }) => {
                                                 <span className='opacity-25 flex'>· {`${dayjs(post.createdAt).fromNow()}`}</span>
                                             </div>
                                             <span className='w-full break-words'>{post.name}</span>
-                                            <div>
-                                                <HeartOutlined className='mt-4 hover:text-red-500 hover:scale-125 cursor-pointer' />
+                                            <div className='flex flex-row mt-4 gap-1 items-center'>
+                                                {
+                                                    userLikes?.userLikes.some((like) => like.postId === post.id)
+                                                        ?
+                                                        <LikePost liked={true} id={post.id} />
+                                                        :
+                                                        <LikePost liked={false} id={post.id} />
+                                                }
+
+                                                {
+                                                    post.likedCount
+                                                }
                                             </div>
 
                                         </div>
