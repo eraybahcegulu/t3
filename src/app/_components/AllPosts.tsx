@@ -12,6 +12,7 @@ dayjs.extend(relativeTime);
 
 const AllPosts = (props: { userId: string }) => {
     const { data, isLoading: postsLoading, isFetching: postsFetching, isFetched: postFetcheds } = api.post.getAll.useQuery();
+    const { data: userLikes } = api.post.getLikes.useQuery();
     const [id, setId] = useState<number | null>();
 
     const handleDeletePost = (id: number) => {
@@ -72,19 +73,18 @@ const AllPosts = (props: { userId: string }) => {
                                             </div>
                                             <span className='w-full break-words'>{post.name}</span>
                                             <div>
-                                                <LikePost id={post.id} />
+                                                {
+                                                    userLikes?.userLikes.some((like) => like.postId === post.id)
+                                                        ?
+                                                        <LikePost liked={true} id={post.id} />
+                                                        :
+                                                        <LikePost liked={false} id={post.id} />
+                                                }
                                             </div>
 
                                         </div>
-                                        {
-                                            post.likedByUser
-                                            &&
-                                            <span> liked </span>
-                                        }
                                         {props.userId === post?.author?.id
                                             &&
-
-
                                             <div className='flex flex-row'>
 
                                                 <div>

@@ -133,4 +133,16 @@ export const postRouter = createTRPCRouter({
 
       return { message: `Liked` };
     }),
+
+
+    getLikes: protectedProcedure.query(async ({ ctx }) => {
+      const userLikes = await ctx.db.like.findMany({
+        where:{
+            userId : ctx.session.user.id
+        }
+    });
+
+    return { userLikes }
+  
+    }),
 });
