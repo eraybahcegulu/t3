@@ -16,6 +16,7 @@ model Post {
     name      String
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+    isEdited    Boolean   @default(false)
 
     createdBy   User   @relation(fields: [createdById], references: [id])
     createdById String

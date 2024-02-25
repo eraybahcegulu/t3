@@ -14,7 +14,7 @@ import { api } from "app/trpc/server";
 
 export default async function Home() {
   noStore();
-  const welcomeToLoby = await api.post.welcomeToLoby.query();
+  const welcomeToLobyGreeting = await api.post.welcomeToLobyGreeting.query();
   const session = await getServerAuthSession();
 
   return (
@@ -37,7 +37,7 @@ export default async function Home() {
                 <MyLikes />
 
               </div>
-              <span className="text-2xl opacity-25 my-2"> {  welcomeToLoby.greeting }</span>
+              <span className="text-2xl opacity-25 my-2"> {  welcomeToLobyGreeting.greeting }</span>
             </div>
 
             <AllPosts userId={session.user.id ?? ""} />

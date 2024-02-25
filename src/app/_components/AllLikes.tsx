@@ -8,6 +8,8 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import Image from 'next/image';
 import DeletePost from './DeletePost';
 import { LikePost } from './LikePost';
+import Link from 'next/link';
+import { EditOutlined } from '@ant-design/icons';
 dayjs.extend(relativeTime);
 
 interface User {
@@ -72,7 +74,11 @@ const AllLikes = (props: { user: User }) => {
                                                 <span className={`${user.id === post?.createdById ? 'text-blue-500 items-end' : 'opacity-25'}`}>
                                                     @{post.author?.name}
                                                 </span>
-                                                <span className='opacity-25 flex'>· {`${dayjs(post?.createdAt).fromNow()}`}</span>
+                                                <span className='opacity-25'>· {`${dayjs(post?.createdAt).fromNow()}`}</span>
+                                                {
+                                                    post?.isEdited &&
+                                                    <span className='opacity-25'> · edited </span>
+                                                }
                                             </div>
                                             <span className='w-full break-words'>{post.name}</span>
                                             <div className='flex flex-row mt-4 gap-1 items-center'>
@@ -96,11 +102,19 @@ const AllLikes = (props: { user: User }) => {
                                         {
                                             user.id === post.createdById
                                             &&
-                                            <div className='flex flex-row'>
-                                                <div>
-                                                    <DeletePost onDelete={handleDeletePost} id={post.id} isFetching={postsFetching} />
-                                                </div>
+                                            <div className='flex flex-row gap-1 justify-center items-center'>
+                                                <Link href={`/posts/edit/${post?.id}`} className='pt-1'>
+                                                    <EditOutlined
+                                                        style={{
+                                                            color: postsFetching ? 'gray' : '#1F75FE',
+                                                            cursor: postsFetching ? 'default' : 'pointer'
+                                                        }}
+                                                        className={`text-xl transition-all ${postsFetching ? '' : ' hover:scale-125 cursor-pointer'}`}
+                                                    />
+                                                </Link>
+                                                <DeletePost onDelete={handleDeletePost} id={post.id} isFetching={postsFetching} />
                                             </div>
+
                                         }
                                     </div>
                             }

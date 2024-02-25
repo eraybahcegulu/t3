@@ -7,24 +7,31 @@ import {
 } from "app/server/api/trpc";
 
 export const postRouter = createTRPCRouter({
-  welcomeToLoby: publicProcedure
-    .query(() => {
+  welcomeToLobyGreeting: publicProcedure
+    .query(async ({ ctx }) => {
       return {
-        greeting: `Welcome to Loby`,
+        greeting: `Welcome to Loby @${ctx.session?.user.name}`,
       };
     }),
 
-    myPosts: publicProcedure
+  myPostsGreeting: publicProcedure
     .query(() => {
       return {
         greeting: `My Posts`,
       };
     }),
 
-    myLikes: publicProcedure
+  myLikesGreeting: publicProcedure
     .query(() => {
       return {
         greeting: `Posts I Liked`,
+      };
+    }),
+
+  editPostGreeting: publicProcedure
+    .query(() => {
+      return {
+        greeting: `Edit Post`,
       };
     }),
 
@@ -76,66 +83,66 @@ export const postRouter = createTRPCRouter({
   getAll: protectedProcedure.query(async ({ ctx }) => {
     await new Promise((resolve) => setTimeout(resolve, 500));
     const posts = await ctx.db.post.findMany({
-        orderBy: { createdAt: "desc" },
+      orderBy: { createdAt: "desc" },
     });
 
     const postsWithAuthorsAndLikes = await Promise.all(posts.map(async (post) => {
-        const author = await ctx.db.user.findUnique({
-            where: { id: post.createdById },
-        });
-
-        const userLikes = await ctx.db.like.findMany({
-            where: {
-                userId: ctx.session.user.id
-            }
-        });
-
-        const likedByUser = userLikes.some((like) => like.postId === post.id);
-
-        const allLikesForPost = await ctx.db.like.findMany({
-            where: {
-                postId: post.id
-            }
-        });
-
-        return { ...post, author, userLikes, likedByUser, likedCount: allLikesForPost.length };
-    }));
-
-    return postsWithAuthorsAndLikes;
-}),
-
-getAllSession: protectedProcedure.query(async ({ ctx }) => {
-  await new Promise((resolve) => setTimeout(resolve, 500));
-  const posts = await ctx.db.post.findMany({
-      orderBy: { createdAt: "desc" },
-      where: { createdBy: { id: ctx.session.user.id } },
-  });
-
-  const postsWithAuthorsAndLikes = await Promise.all(posts.map(async (post) => {
       const author = await ctx.db.user.findUnique({
-          where: { id: post.createdById },
+        where: { id: post.createdById },
       });
 
       const userLikes = await ctx.db.like.findMany({
-          where: {
-              userId: ctx.session.user.id
-          }
+        where: {
+          userId: ctx.session.user.id
+        }
       });
 
       const likedByUser = userLikes.some((like) => like.postId === post.id);
 
       const allLikesForPost = await ctx.db.like.findMany({
-          where: {
-              postId: post.id
-          }
+        where: {
+          postId: post.id
+        }
       });
 
       return { ...post, author, userLikes, likedByUser, likedCount: allLikesForPost.length };
-  }));
+    }));
 
-  return { posts: postsWithAuthorsAndLikes, author: ctx.session.user };
+    return postsWithAuthorsAndLikes;
+  }),
 
-}),
+  getAllSession: protectedProcedure.query(async ({ ctx }) => {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    const posts = await ctx.db.post.findMany({
+      orderBy: { createdAt: "desc" },
+      where: { createdBy: { id: ctx.session.user.id } },
+    });
+
+    const postsWithAuthorsAndLikes = await Promise.all(posts.map(async (post) => {
+      const author = await ctx.db.user.findUnique({
+        where: { id: post.createdById },
+      });
+
+      const userLikes = await ctx.db.like.findMany({
+        where: {
+          userId: ctx.session.user.id
+        }
+      });
+
+      const likedByUser = userLikes.some((like) => like.postId === post.id);
+
+      const allLikesForPost = await ctx.db.like.findMany({
+        where: {
+          postId: post.id
+        }
+      });
+
+      return { ...post, author, userLikes, likedByUser, likedCount: allLikesForPost.length };
+    }));
+
+    return { posts: postsWithAuthorsAndLikes, author: ctx.session.user };
+
+  }),
 
   getSecretMessage: protectedProcedure.query(() => {
     return "you can now see this secret message!";
@@ -190,38 +197,77 @@ getAllSession: protectedProcedure.query(async ({ ctx }) => {
     await new Promise((resolve) => setTimeout(resolve, 500));
 
     const likedPostIds: { postId: number }[] = await ctx.db.like.findMany({
-        where: {
-            userId: ctx.session.user.id,
-        },
-        select: {
-            postId: true,
-        },
+      where: {
+        userId: ctx.session.user.id,
+      },
+      select: {
+        postId: true,
+      },
     });
 
     const posts = await ctx.db.post.findMany({
-        orderBy: { createdAt: "desc" },
-        where: {
-            id: {
-                in: likedPostIds.map((like) => like.postId),
-            },
-        }
+      orderBy: { createdAt: "desc" },
+      where: {
+        id: {
+          in: likedPostIds.map((like) => like.postId),
+        },
+      }
     });
 
     const postsWithAuthors = await Promise.all(posts.map(async (post) => {
-        const author = await ctx.db.user.findUnique({
-            where: { id: post.createdById },
-        });
+      const author = await ctx.db.user.findUnique({
+        where: { id: post.createdById },
+      });
 
-        const allLikesForPost = await ctx.db.like.findMany({
-            where: {
-                postId: post.id
-            }
-        });
+      const allLikesForPost = await ctx.db.like.findMany({
+        where: {
+          postId: post.id
+        }
+      });
 
-        return { ...post, author, likedCount: allLikesForPost.length };
+      return { ...post, author, likedCount: allLikesForPost.length };
     }));
 
     return postsWithAuthors;
-}),
+  }),
+
+  getOne: protectedProcedure
+    .input(z.object({ id: z.number().min(1) }))
+    .query(async ({ ctx, input }) => {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      return ctx.db.post.findFirst({
+        where: { id: input.id }
+      },
+      );
+    }),
+
+  edit: protectedProcedure
+    .input(z.object({ id: z.number().min(1) }))
+    .input(z.object({ name: z.string().min(1) }))
+    .input(z.object({ name: z.string().max(150) }))
+    .mutation(async ({ ctx, input }) => {
+      // simulate a slow db call
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      const post = await ctx.db.post.findFirst({
+        where: {
+          id: input.id,
+        }
+      })
+
+      if (!post) {
+        return { error: `Post not found.` };
+      }
+
+      await ctx.db.post.update({
+        where: { id: input.id },
+        data: { 
+          name: input.name,
+          isEdited: true
+        },
+      });
+
+      return { message: `Post edited` };
+    }),
 
 });
