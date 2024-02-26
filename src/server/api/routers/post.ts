@@ -256,7 +256,7 @@ export const postRouter = createTRPCRouter({
 
   edit: protectedProcedure
     .input(z.object({ id: z.number().min(1) }))
-    .input(z.object({ name: z.string().min(20, { message: 'Cannot be empty' }).max(150, { message: 'Max length 150 characters' }) }))
+    .input(z.object({ name: z.string().min(1, { message: 'Cannot be empty' }).max(150, { message: 'Max length 150 characters' }) }))
     .mutation(async ({ ctx, input }) => {
       // simulate a slow db call
       await new Promise((resolve) => setTimeout(resolve, 1000));
