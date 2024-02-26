@@ -89,7 +89,7 @@ const AllPosts = (props: { userId: string }) => {
                                                 }
                                                 <span className='opacity-25'>
                                                     {
-                                                        post.likedCount !== 0
+                                                        post.likedCount > 0
                                                         &&
                                                         post.likedCount
                                                     }

@@ -36,8 +36,7 @@ export const postRouter = createTRPCRouter({
     }),
 
   create: protectedProcedure
-    .input(z.object({ name: z.string().min(1) }))
-    .input(z.object({ name: z.string().max(150) }))
+    .input(z.object({ name: z.string().min(1, { message: 'Cannot be empty' }).max(150, { message: 'Max length 150 characters' }) }))
     .mutation(async ({ ctx, input }) => {
       // simulate a slow db call
       await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -66,9 +65,18 @@ export const postRouter = createTRPCRouter({
         return { error: `Failed. Movie with id ${input.id} not found.` };
       }
 
-      await ctx.db.post.delete({
+      await ctx.db.post.update({
         where: { id: input.id },
+        data: {
+          isDeleted: true
+        }
       });
+
+      await ctx.db.like.deleteMany({
+        where: {
+          postId: existingPost.id
+        }
+      })
 
       return { message: `Movie "${existingPost.name}" deleted successfully` };
     }),
@@ -83,6 +91,7 @@ export const postRouter = createTRPCRouter({
   getAll: protectedProcedure.query(async ({ ctx }) => {
     await new Promise((resolve) => setTimeout(resolve, 500));
     const posts = await ctx.db.post.findMany({
+      where: { isDeleted: false },
       orderBy: { createdAt: "desc" },
     });
 
@@ -115,7 +124,10 @@ export const postRouter = createTRPCRouter({
     await new Promise((resolve) => setTimeout(resolve, 500));
     const posts = await ctx.db.post.findMany({
       orderBy: { createdAt: "desc" },
-      where: { createdBy: { id: ctx.session.user.id } },
+      where: {
+        createdBy: { id: ctx.session.user.id },
+        isDeleted: false,
+      },
     });
 
     const postsWithAuthorsAndLikes = await Promise.all(posts.map(async (post) => {
@@ -151,11 +163,13 @@ export const postRouter = createTRPCRouter({
   like: protectedProcedure
     .input(z.object({ id: z.number().min(1) }))
     .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
+      const postId = input.id;
 
       const alreadyLiked = await ctx.db.like.findFirst({
         where: {
-          postId: input.id,
-          userId: ctx.session.user.id,
+          postId,
+          userId,
         },
       });
 
@@ -169,13 +183,12 @@ export const postRouter = createTRPCRouter({
         return { message: `Like removed` };
       }
 
-
       await ctx.db.like.create({
         data: {
-          postId: input.id,
-          userId: ctx.session.user.id,
+          postId,
+          userId,
         },
-      })
+      });
 
       return { message: `Liked` };
     }),
@@ -243,8 +256,7 @@ export const postRouter = createTRPCRouter({
 
   edit: protectedProcedure
     .input(z.object({ id: z.number().min(1) }))
-    .input(z.object({ name: z.string().min(1) }))
-    .input(z.object({ name: z.string().max(150) }))
+    .input(z.object({ name: z.string().min(20, { message: 'Cannot be empty' }).max(150, { message: 'Max length 150 characters' }) }))
     .mutation(async ({ ctx, input }) => {
       // simulate a slow db call
       await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -261,7 +273,7 @@ export const postRouter = createTRPCRouter({
 
       await ctx.db.post.update({
         where: { id: input.id },
-        data: { 
+        data: {
           name: input.name,
           isEdited: true
         },

@@ -12,10 +12,11 @@ interface Res {
 
 export function LikePost({ id, liked }: { id: number, liked: boolean }) {
     const ctx = api.useContext();
+    
     const likePost = api.post.like.useMutation({
         onSuccess: (res: Res) => {
-            void ctx.post.getLikes.fetch();
             void ctx.post.getLikesPost.fetch();
+            void ctx.post.getLikes.fetch();
             if (res.error) {
                 void toast.error(res.error)
             } else if (res.message) {

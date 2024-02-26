@@ -88,7 +88,7 @@ const AllSessionPosts = (props: { user: User }) => {
                                                 }
                                                 <span className='opacity-25'>
                                                     {
-                                                        post.likedCount !== 0
+                                                        post.likedCount > 0
                                                         &&
                                                         post.likedCount
                                                     }
