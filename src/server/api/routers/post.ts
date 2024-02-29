@@ -78,6 +78,12 @@ export const postRouter = createTRPCRouter({
         }
       })
 
+      await ctx.db.comment.deleteMany({
+        where: {
+          postId: existingPost.id
+        }
+      })
+
       return { message: `Movie "${existingPost.name}" deleted successfully` };
     }),
 
@@ -91,70 +97,83 @@ export const postRouter = createTRPCRouter({
   getAll: protectedProcedure.query(async ({ ctx }) => {
     await new Promise((resolve) => setTimeout(resolve, 500));
     const posts = await ctx.db.post.findMany({
-      where: { isDeleted: false },
       orderBy: { createdAt: "desc" },
+      where: { isDeleted: false },
+      include: {
+        likes: true,
+        createdBy: true,
+        comments: true
+      },
     });
 
-    const postsWithAuthorsAndLikes = await Promise.all(posts.map(async (post) => {
-      const author = await ctx.db.user.findUnique({
-        where: { id: post.createdById },
-      });
-
-      const userLikes = await ctx.db.like.findMany({
-        where: {
-          userId: ctx.session.user.id
-        }
-      });
-
-      const likedByUser = userLikes.some((like) => like.postId === post.id);
-
-      const allLikesForPost = await ctx.db.like.findMany({
-        where: {
-          postId: post.id
-        }
-      });
-
-      return { ...post, author, userLikes, likedByUser, likedCount: allLikesForPost.length };
-    }));
-
-    return postsWithAuthorsAndLikes;
+    return posts;
   }),
 
   getAllSession: protectedProcedure.query(async ({ ctx }) => {
     await new Promise((resolve) => setTimeout(resolve, 500));
+
     const posts = await ctx.db.post.findMany({
       orderBy: { createdAt: "desc" },
       where: {
         createdBy: { id: ctx.session.user.id },
         isDeleted: false,
       },
+      include: {
+        likes: true,
+        createdBy: true,
+        comments: true
+      },
     });
 
-    const postsWithAuthorsAndLikes = await Promise.all(posts.map(async (post) => {
-      const author = await ctx.db.user.findUnique({
-        where: { id: post.createdById },
-      });
-
-      const userLikes = await ctx.db.like.findMany({
-        where: {
-          userId: ctx.session.user.id
-        }
-      });
-
-      const likedByUser = userLikes.some((like) => like.postId === post.id);
-
-      const allLikesForPost = await ctx.db.like.findMany({
-        where: {
-          postId: post.id
-        }
-      });
-
-      return { ...post, author, userLikes, likedByUser, likedCount: allLikesForPost.length };
-    }));
-
-    return { posts: postsWithAuthorsAndLikes, author: ctx.session.user };
+    return posts;
 
   }),
+
+  getLikesPost: protectedProcedure.query(async ({ ctx }) => {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    const userLikes = await ctx.db.user.findFirst({
+      where: {
+        id: ctx.session.user.id,
+      },
+      include: {
+        likes: {
+          select: {
+            postId: true,
+            post: {
+              select: {
+                isDeleted: false,
+                id: true,
+                name: true,
+                isEdited: true,
+                createdById: true,
+                createdAt: true,
+                likes: true,
+                comments: true
+              }
+            }
+          }
+        },
+      },
+    });
+
+    return userLikes;
+  }),
+
+
+  getLikes: protectedProcedure.query(async ({ ctx }) => {
+    const userLikes = await ctx.db.like.findMany({
+      where: {
+        userId: ctx.session.user.id
+      }
+    });
+
+
+    return { userLikes }
+
+  }),
+
+
 
   getSecretMessage: protectedProcedure.query(() => {
     return "you can now see this secret message!";
@@ -194,62 +213,20 @@ export const postRouter = createTRPCRouter({
     }),
 
 
-  getLikes: protectedProcedure.query(async ({ ctx }) => {
-    const userLikes = await ctx.db.like.findMany({
-      where: {
-        userId: ctx.session.user.id
-      }
-    });
-
-
-    return { userLikes }
-
-  }),
-
-  getLikesPost: protectedProcedure.query(async ({ ctx }) => {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    const likedPostIds: { postId: number }[] = await ctx.db.like.findMany({
-      where: {
-        userId: ctx.session.user.id,
-      },
-      select: {
-        postId: true,
-      },
-    });
-
-    const posts = await ctx.db.post.findMany({
-      orderBy: { createdAt: "desc" },
-      where: {
-        id: {
-          in: likedPostIds.map((like) => like.postId),
-        },
-      }
-    });
-
-    const postsWithAuthors = await Promise.all(posts.map(async (post) => {
-      const author = await ctx.db.user.findUnique({
-        where: { id: post.createdById },
-      });
-
-      const allLikesForPost = await ctx.db.like.findMany({
-        where: {
-          postId: post.id
-        }
-      });
-
-      return { ...post, author, likedCount: allLikesForPost.length };
-    }));
-
-    return postsWithAuthors;
-  }),
 
   getOne: protectedProcedure
-    .input(z.object({ id: z.number().min(1) }))
+    .input(z.object({ postId: z.number().min(1) }))
     .query(async ({ ctx, input }) => {
       await new Promise((resolve) => setTimeout(resolve, 1000));
       return ctx.db.post.findFirst({
-        where: { id: input.id }
+        where: {
+          id: input.postId,
+          isDeleted: false
+        },
+        include: {
+          createdBy: true,
+          likes: true
+        }
       },
       );
     }),
