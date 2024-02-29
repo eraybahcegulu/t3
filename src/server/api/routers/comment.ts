@@ -43,4 +43,26 @@ export const commentRouter = createTRPCRouter({
             return comments;
         }),
 
+    delete: protectedProcedure
+        .input(z.object({ id: z.number().min(1) }))
+        .mutation(async ({ ctx, input }) => {
+            // simulate a slow db call
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+
+            const existingComment = await ctx.db.comment.findFirst({
+                where: { id: input.id },
+            });
+
+            if (!existingComment) {
+                return { error: `Failed. Comment not found.` };
+            }
+
+            await ctx.db.comment.delete({
+                where: {
+                    id: existingComment.id
+                }
+            })
+
+            return { message: `Comment deleted successfully` };
+        }),
 });

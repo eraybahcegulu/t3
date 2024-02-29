@@ -81,7 +81,7 @@ const AllLikes = (props: { user: User }) => {
                                             </div>
                                             <span className='w-full break-words'>{post.post.name}</span>
                                             <div className='flex flex-row mt-4 gap-10 items-center'>
-                                                <div className='flex flex-row gap-1'>
+                                                <div className='flex flex-row gap-1 w-[50px]'>
                                                     {
                                                         userLikes?.userLikes.some((like) => like.postId === post.post.id)
                                                             ?
@@ -99,7 +99,7 @@ const AllLikes = (props: { user: User }) => {
                                                 </div>
                                                 <div className='flex flex-row gap-1'>
                                                     <Link href={`/posts/${post.post.id}`} className='pt-1'>
-                                                        <TfiComment className=" text-blue-600 transition-all hover:scale-125 cursor-pointer" />
+                                                        <TfiComment className=" opacity-25 hover:text-blue-600 hover:opacity-100  transition-all hover:scale-125 cursor-pointer" />
                                                     </Link>
                                                     <span className='opacity-25'>
                                                         {

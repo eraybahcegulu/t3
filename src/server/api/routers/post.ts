@@ -62,7 +62,7 @@ export const postRouter = createTRPCRouter({
       });
 
       if (!existingPost) {
-        return { error: `Failed. Movie with id ${input.id} not found.` };
+        return { error: `Failed. Post not found.` };
       }
 
       await ctx.db.post.update({
@@ -84,7 +84,7 @@ export const postRouter = createTRPCRouter({
         }
       })
 
-      return { message: `Movie "${existingPost.name}" deleted successfully` };
+      return { message: `Post deleted successfully` };
     }),
 
   getLatest: protectedProcedure.query(({ ctx }) => {
