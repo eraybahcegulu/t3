@@ -13,7 +13,7 @@ export default async function Likes() {
     const myLikesGreeting = await api.post.myLikesGreeting.query();
     const session = await getServerAuthSession();
     return (
-        <main className="flex min-h-screen max-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
+        <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
             {
                 session
                     ?
@@ -28,7 +28,7 @@ export default async function Likes() {
                         </div>
                         <AllLikes user={session.user} />
                         <div className="mt-auto">
-                            <div className="flex justify-center items-end m-5">
+                            <div className="flex justify-center items-end m-4">
                                 <SignOut />
                             </div>
                         </div>

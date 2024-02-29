@@ -10,6 +10,7 @@ import DeletePost from './DeletePost';
 import { LikePost } from './LikePost';
 import { EditOutlined } from '@ant-design/icons';
 import Link from 'next/link';
+import { TfiComment } from 'react-icons/tfi';
 dayjs.extend(relativeTime);
 
 const AllPosts = (props: { userId: string }) => {
@@ -24,7 +25,7 @@ const AllPosts = (props: { userId: string }) => {
     if (postsLoading) return <LoadingSpinner p={"4"} />
 
     return (
-        <div className='h-full overflow-y-auto'>
+        <div className='max-h-[600px] overflow-y-auto'>
             {
                 (postsFetching)
                 &&
@@ -53,7 +54,7 @@ const AllPosts = (props: { userId: string }) => {
             {
                 data?.map(
                     (post) => (
-                        <div className='max-w-[100%]  border-b border-gray-700 p-2' key={post.id}>
+                        <div className=' w-full border-b border-gray-700 p-2  text-nowrap' key={post.id}>
                             {
                                 postFetcheds
                                     &&
@@ -65,12 +66,12 @@ const AllPosts = (props: { userId: string }) => {
                                     :
                                     <div className=' flex flex-row gap-2 items-start '>
                                         <div className='flex-shrink-0'>
-                                            <Image className="h-12 w-12 rounded-full" src={post?.author?.image ?? ''} width={64} height={64} alt="User Avatar" />
+                                            <Image className="h-12 w-12 rounded-full" src={post?.createdBy.image ?? ''} width={64} height={64} alt="User Avatar" />
                                         </div>
-                                        <div className='flex flex-col flex-grow min-w-[300px]'>
+                                        <div className='flex flex-col flex-grow '>
                                             <div className='flex flex-row gap-1'>
-                                                <span className={`${props.userId === post?.author?.id ? 'text-blue-500 items-end' : 'opacity-25'}`}>
-                                                    @{post?.author?.name}
+                                                <span className={`${props.userId === post?.createdById ? 'text-blue-500 items-end' : 'opacity-25'}`}>
+                                                    @{post?.createdBy.name}
                                                 </span>
                                                 <span className='opacity-25'>· {`${dayjs(post.createdAt).fromNow()}`}</span>
                                                 {
@@ -79,25 +80,41 @@ const AllPosts = (props: { userId: string }) => {
                                                 }
                                             </div>
                                             <span className='w-full break-words'>{post.name}</span>
-                                            <div className='flex flex-row mt-4 gap-1 items-center'>
-                                                {
-                                                    userLikes?.userLikes.some((like) => like.postId === post.id)
-                                                        ?
-                                                        <LikePost liked={true} id={post.id} />
-                                                        :
-                                                        <LikePost liked={false} id={post.id} />
-                                                }
-                                                <span className='opacity-25'>
+
+                                            <div className='flex flex-row gap-10 mt-4 items-center'>
+                                                <div className='flex flex-row gap-1 w-[50px]'>
                                                     {
-                                                        post.likedCount > 0
-                                                        &&
-                                                        post.likedCount
+                                                        userLikes?.userLikes.some((like) => like.postId === post.id)
+                                                            ?
+                                                            <LikePost liked={true} id={post.id} />
+                                                            :
+                                                            <LikePost liked={false} id={post.id} />
                                                     }
-                                                </span>
+                                                    <span className='opacity-25'>
+                                                        {
+                                                            post.likes.length > 0
+                                                            &&
+                                                            post.likes.length
+                                                        }
+                                                    </span>
+                                                </div>
+                                                <div className='flex flex-row gap-1'>
+                                                    <Link href={`/posts/${post?.id}`} className='pt-1'>
+                                                        <TfiComment className=" opacity-25 hover:text-blue-600 hover:opacity-100 transition-all hover:scale-125 cursor-pointer" />
+                                                    </Link>
+                                                    <span className='opacity-25'>
+                                                        {
+                                                            post.comments.length > 0
+                                                            &&
+                                                            post.comments.length
+                                                        }
+                                                    </span>
+                                                </div>
                                             </div>
 
+
                                         </div>
-                                        {props.userId === post?.author?.id
+                                        {props.userId === post?.createdBy.id
                                             &&
                                             <div className='flex flex-row gap-1 justify-center items-center'>
                                                 <Link href={`/posts/edit/${post?.id}`} className='pt-1'>

@@ -10,6 +10,7 @@ import DeletePost from './DeletePost';
 import { LikePost } from './LikePost';
 import Link from 'next/link';
 import { EditOutlined } from '@ant-design/icons';
+import { TfiComment } from 'react-icons/tfi';
 dayjs.extend(relativeTime);
 
 interface User {
@@ -29,14 +30,14 @@ const AllSessionPosts = (props: { user: User }) => {
     };
 
     return (
-        <div className='h-full overflow-y-auto'>
+        <div className='max-h-[675px] overflow-y-auto'>
             {
                 postsFetching
                 &&
                 <LoadingSpinner p={"4"} />
             }
             {
-                (!data || !data.author || !data.posts)
+                (!data)
                 &&
                 !postsFetching
                 &&
@@ -44,7 +45,7 @@ const AllSessionPosts = (props: { user: User }) => {
             }
 
             {
-                data?.posts.length === 0
+                data?.length === 0
                 &&
                 postsFetched
                 &&
@@ -54,11 +55,11 @@ const AllSessionPosts = (props: { user: User }) => {
             }
 
             {
-                data?.posts.map(
+                data?.map(
                     (post) => (
-                        <div className='max-w-[100%]  border-b border-gray-700 p-2' key={post.id}>
+                        <div className='max-w-[100%]  border-b border-gray-700 p-2 text-nowrap' key={post.id}>
                             {
-                                post?.id === id
+                                post.id === id
                                     ?
                                     <span className='flex justify-center text-2xl text-red-500'> Deleted </span>
                                     :
@@ -66,7 +67,7 @@ const AllSessionPosts = (props: { user: User }) => {
                                         <div className='flex-shrink-0'>
                                             <Image className="h-12 w-12 rounded-full" src={user.image ?? ''} width={64} height={64} alt="User Avatar" />
                                         </div>
-                                        <div className='flex flex-col flex-grow min-w-[300px]'>
+                                        <div className='flex flex-col flex-grow '>
                                             <div className='flex flex-row gap-1'>
                                                 <span className={`${user.id === post?.createdById ? 'text-blue-500 items-end' : 'opacity-25'}`}>
                                                     @{user.name}
@@ -78,21 +79,35 @@ const AllSessionPosts = (props: { user: User }) => {
                                                 }
                                             </div>
                                             <span className='w-full break-words'>{post.name}</span>
-                                            <div className='flex flex-row mt-4 gap-1 items-center'>
-                                                {
-                                                    userLikes?.userLikes.some((like) => like.postId === post.id)
-                                                        ?
-                                                        <LikePost liked={true} id={post.id} />
-                                                        :
-                                                        <LikePost liked={false} id={post.id} />
-                                                }
-                                                <span className='opacity-25'>
+                                            <div className='flex flex-row mt-4 gap-10 items-center'>
+                                                <div className='flex flex-row gap-1'>
                                                     {
-                                                        post.likedCount > 0
-                                                        &&
-                                                        post.likedCount
+                                                        userLikes?.userLikes.some((like) => like.postId === post.id)
+                                                            ?
+                                                            <LikePost liked={true} id={post.id} />
+                                                            :
+                                                            <LikePost liked={false} id={post.id} />
                                                     }
-                                                </span>
+                                                    <span className='opacity-25'>
+                                                        {
+                                                            post.likes.length > 0
+                                                            &&
+                                                            post.likes.length
+                                                        }
+                                                    </span>
+                                                </div>
+                                                <div className='flex flex-row gap-1'>
+                                                    <Link href={`/posts/${post?.id}`} className='pt-1'>
+                                                        <TfiComment className="text-xl text-blue-600 transition-all hover:scale-125 cursor-pointer" />
+                                                    </Link>
+                                                    <span className='opacity-25'>
+                                                        {
+                                                            post.comments.length > 0
+                                                            &&
+                                                            post.comments.length
+                                                        }
+                                                    </span>
+                                                </div>
                                             </div>
 
                                         </div>
