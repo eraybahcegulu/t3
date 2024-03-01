@@ -28,18 +28,18 @@ export const friendshipRouter = createTRPCRouter({
             }
 
             const alreadySent = await ctx.db.friendship.findFirst({
-                where:{
+                where: {
                     receiverId: receiverUser.id,
                     senderId: ctx.session.user.id
                 }
             })
 
-            if(alreadySent){
+            if (alreadySent) {
                 return { error: `Friend request already sent.` };
             }
 
             await ctx.db.friendship.create({
-                data:{
+                data: {
                     senderId: ctx.session.user.id,
                     receiverId: receiverUser.id
                 }
@@ -49,7 +49,19 @@ export const friendshipRouter = createTRPCRouter({
             return { message: `Friend request sent` };
         }),
 
+    getSentRequests: protectedProcedure
+        .query(async ({ ctx }) => {
 
+            const sentRequests = await ctx.db.friendship.findMany({
+                orderBy: { createdAt: "desc" },
+                where: {
+                    senderId: ctx.session.user.id
+                },
+                include: {
+                    receiver: true
+                }
+            });
 
-
+            return sentRequests;
+        })
 });

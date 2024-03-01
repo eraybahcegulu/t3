@@ -12,7 +12,6 @@ export function EditPost({ existName, id }: { existName: string, id: number }) {
     const [name, setName] = useState("");
     const [changing, setChanging] = useState(false);
     const ctx = api.useContext();
-
     const editPost = api.post.edit.useMutation({
         onSuccess: (res) => {
             router.refresh();

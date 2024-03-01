@@ -1,5 +1,6 @@
 import { Modal } from 'antd';
 import SendFriendRequest from './SendFriendRequest';
+import SentFriendRequests from './SentFriendRequests';
 
 
 const Friendship = ({ openModal, setOpenModal }: { openModal: boolean, setOpenModal: (isOpen: boolean) => void }) => {
@@ -38,24 +39,8 @@ const Friendship = ({ openModal, setOpenModal }: { openModal: boolean, setOpenMo
                             </div>
                         </div>
                         <div className='sent flex flex-col justify-center items-center border border-black w-[225px] p-4'>
-                            <span className='font-bold'> Received Friend Requests </span>
-                            <div className='flex flex-col items-center justify-start border border-black h-[200px] w-full overflow-x-auto gap-2 p-2'>
-                                <span className='border border-black w-full'>a</span>
-                                <span className='border border-black w-full'>a</span>
-                                <span className='border border-black w-full'>a</span>
-                                <span className='border border-black w-full'>a</span>
-                                <span className='border border-black w-full'>a</span>
-                                <span className='border border-black w-full'>a</span>
-                                <span className='border border-black w-full'>a</span>
-                                <span className='border border-black w-full'>a</span>
-                                <span className='border border-black w-full'>a</span>
-                                <span className='border border-black w-full'>a</span>
-                                <span className='border border-black w-full'>a</span>
-                                <span className='border border-black w-full'>a</span>
-                                <span className='border border-black w-full'>a</span>
-                                <span className='border border-black w-full'>a</span>
-                                <span className='border border-black w-full'>a</span>
-                            </div>
+                            <span className='font-bold'> Sent Friend Requests </span>
+                            <SentFriendRequests />
                         </div>
 
 
