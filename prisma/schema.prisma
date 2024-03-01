@@ -74,8 +74,8 @@ model Friendship {
   senderId      String    
   receiverId    String
 
-  sender User @relation("FriendshipSenders", fields: [receiverId], references: [id], onDelete: Cascade)
-  receiver User @relation("FriendshipReceivers", fields: [senderId], references: [id], onDelete: Cascade)
+  sender User @relation("FriendshipSenders", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver User @relation("FriendshipReceivers", fields: [receiverId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
 }
