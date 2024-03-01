@@ -1,11 +1,11 @@
 import Comments from "app/app/_components/Comments";
 import { CreateComment } from "app/app/_components/CreateComment";
 import Loby from "app/app/_components/Loby";
-import MyLikes from "app/app/_components/MyLikes";
-import MyPosts from "app/app/_components/MyPosts";
+import MyLikes from "app/app/_components/Buttons/MyLikes";
+import MyPosts from "app/app/_components/Buttons/MyPosts";
 import { Post } from "app/app/_components/Post";
-import SignIn from "app/app/_components/SignIn";
-import SignOut from "app/app/_components/SignOut";
+import SignIn from "app/app/_components/Buttons/SignIn";
+import SignOut from "app/app/_components/Buttons/SignOut";
 import { getServerAuthSession } from "app/server/auth";
 
 import Image from "next/image";

@@ -1,11 +1,11 @@
 import { getServerAuthSession } from "app/server/auth";
 import { unstable_noStore as noStore } from "next/cache";
 import React from 'react'
-import SignIn from '../_components/SignIn';
+import SignIn from '../_components/Buttons/SignIn';
 import AllSessionPosts from '../_components/AllSessionPosts';
 import Loby from '../_components/Loby';
-import SignOut from '../_components/SignOut';
-import MyLikes from '../_components/MyLikes';
+import SignOut from '../_components/Buttons/SignOut';
+import MyLikes from '../_components/Buttons/MyLikes';
 import { api } from "app/trpc/server";
 
 export default async function Posts() {

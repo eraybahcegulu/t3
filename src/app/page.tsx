@@ -3,14 +3,15 @@ import { getServerAuthSession } from "app/server/auth";
 
 import { CreatePost } from "./_components/CreatePost";
 
-import SignIn from "./_components/SignIn";
+import SignIn from "./_components/Buttons/SignIn";
 
 import Image from "next/image";
 import AllPosts from "./_components/AllPosts";
-import SignOut from "./_components/SignOut";
-import MyPosts from "./_components/MyPosts";
-import MyLikes from "./_components/MyLikes";
+import SignOut from "./_components/Buttons/SignOut";
+import MyPosts from "./_components/Buttons/MyPosts";
+import MyLikes from "./_components/Buttons/MyLikes";
 import { api } from "app/trpc/server";
+import OpenFriendship from "./_components/Buttons/OpenFriendship";
 
 export default async function Home() {
   noStore();
@@ -35,6 +36,7 @@ export default async function Home() {
 
                 <MyPosts />
                 <MyLikes />
+                <OpenFriendship/>
 
               </div>
               <span className="text-2xl opacity-25 my-2"> {  welcomeToLobyGreeting.greeting }</span>

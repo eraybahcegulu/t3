@@ -1,9 +1,9 @@
 import { EditPost } from "app/app/_components/EditPost";
 import Loby from "app/app/_components/Loby";
-import MyLikes from "app/app/_components/MyLikes";
-import MyPosts from "app/app/_components/MyPosts";
-import SignIn from "app/app/_components/SignIn";
-import SignOut from "app/app/_components/SignOut";
+import MyLikes from "app/app/_components/Buttons/MyLikes";
+import MyPosts from "app/app/_components/Buttons/MyPosts";
+import SignIn from "app/app/_components/Buttons/SignIn";
+import SignOut from "app/app/_components/Buttons/SignOut";
 import { getServerAuthSession } from "app/server/auth";
 import { api } from "app/trpc/server";
 import Image from "next/image";

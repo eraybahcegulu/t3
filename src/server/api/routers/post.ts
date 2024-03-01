@@ -168,12 +168,9 @@ export const postRouter = createTRPCRouter({
       }
     });
 
-
     return { userLikes }
 
   }),
-
-
 
   getSecretMessage: protectedProcedure.query(() => {
     return "you can now see this secret message!";
@@ -211,8 +208,6 @@ export const postRouter = createTRPCRouter({
 
       return { message: `Liked` };
     }),
-
-
 
   getOne: protectedProcedure
     .input(z.object({ postId: z.number().min(1) }))

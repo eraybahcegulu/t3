@@ -63,8 +63,21 @@ model User {
     accounts      Account[]
     sessions      Session[]
     posts         Post[]
-    comments       Comment[]
+    comments      Comment[]
+    sentRequests     Friendship[] @relation("FriendshipSenders")
+    receivedRequests   Friendship[] @relation("FriendshipReceivers")
     likes       Like[]
+}
+
+model Friendship {
+  id        String   @id @default(cuid())
+  senderId      String    
+  receiverId    String
+
+  sender User @relation("FriendshipSenders", fields: [receiverId], references: [id], onDelete: Cascade)
+  receiver User @relation("FriendshipReceivers", fields: [senderId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
 }
 
 model Like {
