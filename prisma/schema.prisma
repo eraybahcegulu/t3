@@ -11,6 +11,11 @@ datasource db {
     relationMode = "prisma"
 }
 
+enum FriendshipStatus {
+  PENDING
+  ACCEPTED
+}
+
 model Post {
     id        Int      @id @default(autoincrement())
     name      String
@@ -76,6 +81,8 @@ model Friendship {
 
   sender User @relation("FriendshipSenders", fields: [senderId], references: [id], onDelete: Cascade)
   receiver User @relation("FriendshipReceivers", fields: [receiverId], references: [id], onDelete: Cascade)
+
+  status    FriendshipStatus @default(PENDING)
 
   createdAt DateTime @default(now())
 }
