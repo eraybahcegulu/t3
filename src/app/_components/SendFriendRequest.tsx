@@ -12,12 +12,13 @@ interface Res {
 
 const SendFriendRequest = () => {
     const [search, setSearch] = useState<string>('');
-
-    const createPost = api.friendship.send.useMutation({
+    const ctx = api.useContext();
+    const sendFriendRequest = api.friendship.send.useMutation({
         onSuccess: (res: Res) => {
             if (res.error) {
                 toast.error(res.error)
             } else if (res.message) {
+                void ctx.friendship.getSentRequests.fetch();
                 toast.success(res.message)
             }
             setSearch('')
@@ -33,9 +34,10 @@ const SendFriendRequest = () => {
     });
 
     return (
-        <Search value={search} addonBefore="@" onSearch={() => { createPost.mutate({ search }) }}
+        <Search value={search} addonBefore="@" onSearch={() => { sendFriendRequest.mutate({ search }) }}
             enterButton="Send" onChange={(e) => setSearch(e.target.value)}
-            className='max-w-[275px]' placeholder="Send Friend Request" />
+            disabled={sendFriendRequest.isLoading}
+            className='max-w-[275px]' placeholder="name" />
     )
 }
 

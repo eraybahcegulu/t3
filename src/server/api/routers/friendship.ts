@@ -51,7 +51,7 @@ export const friendshipRouter = createTRPCRouter({
 
     getSentRequests: protectedProcedure
         .query(async ({ ctx }) => {
-
+            await new Promise((resolve) => setTimeout(resolve, 500));
             const sentRequests = await ctx.db.friendship.findMany({
                 orderBy: { createdAt: "desc" },
                 where: {
@@ -59,6 +59,22 @@ export const friendshipRouter = createTRPCRouter({
                 },
                 include: {
                     receiver: true
+                }
+            });
+
+            return sentRequests;
+        }),
+
+        getReceivedRequests: protectedProcedure
+        .query(async ({ ctx }) => {
+            await new Promise((resolve) => setTimeout(resolve, 500));
+            const sentRequests = await ctx.db.friendship.findMany({
+                orderBy: { createdAt: "desc" },
+                where: {
+                    receiverId: ctx.session.user.id
+                },
+                include: {
+                    sender: true
                 }
             });
 
