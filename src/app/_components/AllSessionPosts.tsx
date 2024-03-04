@@ -11,6 +11,7 @@ import { LikePost } from './LikePost';
 import Link from 'next/link';
 import { EditOutlined } from '@ant-design/icons';
 import { TfiComment } from 'react-icons/tfi';
+import { FaCommentAlt, FaRegCommentAlt } from 'react-icons/fa';
 dayjs.extend(relativeTime);
 
 interface User {
@@ -98,7 +99,21 @@ const AllSessionPosts = (props: { user: User }) => {
                                                 </div>
                                                 <div className='flex flex-row gap-1'>
                                                     <Link href={`/posts/${post?.id}`} className='pt-1'>
-                                                        <TfiComment className=" opacity-25 hover:text-blue-600 hover:opacity-100 transition-all hover:scale-125 cursor-pointer" />
+                                                    {
+                                                            post.comments.some((comment) => comment.createdById === props.user.id)
+                                                                ?
+                                                                <FaCommentAlt className={
+                                                                    `text-blue-600 hover:opacity-100 transition-all hover:scale-125 cursor-pointer`
+                                                                }
+                                                                />
+                                                                :
+                                                                <FaRegCommentAlt className={
+                                                                    `
+                                                                    hover:text-blue-600 opacity-25 hover:opacity-100 transition-all hover:scale-125 cursor-pointer
+                                                                    `
+                                                                }
+                                                                />
+                                                        }
                                                     </Link>
                                                     <span className='opacity-25'>
                                                         {
