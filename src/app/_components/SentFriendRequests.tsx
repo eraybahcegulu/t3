@@ -7,9 +7,9 @@ import LoadingSpinner from './LoadingSpinner';
 import CancelFriendRequest from './CancelFriendRequest';
 
 const SentFriendRequests = () => {
-    const { data, isLoading, isFetched, isFetching } = api.friendship.getSentRequests.useQuery()
+    const { data, isLoading, isFetched } = api.friendship.getSentRequests.useQuery()
 
-    if (isLoading || isFetching) return (
+    if (isLoading ) return (
         <div className='flex flex-col items-center justify-start max-h-[200px] w-full overflow-x-auto gap-2 p-2'>
             <LoadingSpinner />
         </div>

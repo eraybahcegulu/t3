@@ -5,16 +5,16 @@ import LoadingSpinner from './LoadingSpinner';
 import DeleteFriend from './DeleteFriend';
 
 const Friends = () => {
-    const { data, isLoading, isFetching, isFetched } = api.friendship.getFriends.useQuery();
+    const { data, isLoading, isFetched } = api.friendship.getFriends.useQuery();
 
-    if (isLoading || isFetching) return (
-        <div className='flex flex-col items-center justify-start h-[200px] w-full overflow-x-auto gap-2 p-2'>
+    if (isLoading) return (
+        <div className='flex flex-col items-center justify-start max-h-[200px] w-full overflow-x-auto gap-2 p-2'>
             <LoadingSpinner />
         </div>
     )
 
     return (
-        <div className='flex flex-col items-center justify-start h-[200px] w-full overflow-x-auto gap-2 p-2'>
+        <div className='flex flex-col items-center justify-start max-h-[200px] w-full overflow-x-auto gap-2 p-2'>
             {
                 data?.length === 0
                 &&

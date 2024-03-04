@@ -12,8 +12,6 @@ export const friendshipRouter = createTRPCRouter({
             // simulate a slow db call
             await new Promise((resolve) => setTimeout(resolve, 1000));
 
-
-
             const receiverUser = await ctx.db.user.findFirst({
                 where: {
                     name: input.search,
@@ -187,6 +185,7 @@ export const friendshipRouter = createTRPCRouter({
 
     getFriends: protectedProcedure
         .query(async ({ ctx }) => {
+            await new Promise((resolve) => setTimeout(resolve, 500));
             const friends = await ctx.db.user.findMany({
                 where: {
                     AND: [
